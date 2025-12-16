@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { FilesetResolver, HandLandmarker } from '@mediapipe/tasks-vision';
-import { TreeMode } from '../types'; // ✅ 恢复了对 types.ts 的引用
+
+// --- 1. 直接在此处定义 TreeMode，移除对外部文件的依赖，解决路径报错 ---
+export enum TreeMode {
+  CHAOS = 'chaos',
+  FORMED = 'formed',
+}
 
 interface GestureControllerProps {
   onModeChange: (mode: TreeMode) => void;
@@ -32,7 +37,7 @@ export const GestureController: React.FC<GestureControllerProps> = ({ onModeChan
           "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.3/wasm"
         );
 
-        // --- 关键修改：使用在线 CDN 地址 ---
+        // --- 2. 关键修改：使用在线 CDN 地址 ---
         // 确保部署时不会因为缺少本地模型文件而卡住
         const modelAssetPath = "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task";
 
@@ -285,6 +290,13 @@ export const GestureController: React.FC<GestureControllerProps> = ({ onModeChan
           ref={canvasRef}
           className="absolute inset-0 w-full h-full object-cover transform -scale-x-100 pointer-events-none z-20"
         />
+        
+        {/* Hand Position Debug */}
+        {/* {handPos && (
+          <div className="absolute top-2 left-2 text-[10px] text-[#D4AF37] bg-black/70 px-2 py-1 rounded font-mono">
+            X: {handPos.x.toFixed(2)} Y: {handPos.y.toFixed(2)}
+          </div>
+        )} */}
         
         {/* Hand Position Indicator */}
         {handPos && (
